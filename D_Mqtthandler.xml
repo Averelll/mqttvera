@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <deviceType>urn:schemas-mqtthandler-se:device:Mqtthandler:1</deviceType>
+        <friendlyName>MQTT handler</friendlyName>
+        <staticJson>D_Mqtthandler.json</staticJson>
+	   <handleChildren>1</handleChildren>
+        <serviceList>
+            <service>
+                <serviceType>urn:schemas-mqtthandler-se:service:Mqtthandler:1</serviceType>
+                <serviceId>urn:upnp-mqtthandler-se:serviceId:Mqtthandler</serviceId>
+                <SCPDURL>S_Mqtthandler.xml</SCPDURL>
+            </service>
+        </serviceList>
+        <implementationList>
+            <implementationFile>I_Mqtthandler.xml</implementationFile>
+        </implementationList>
+    </device>
+</root>

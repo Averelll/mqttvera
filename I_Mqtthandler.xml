@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<implementation>
+    <functions>
+        local p
+    	local u
+        local m
+        
+        function startup(lul_device)
+            luup.log("Mqtthandler plugin: loading library L_SensorMqtt ...")
+            if (package.path:find ("/etc/cmh-ludl/?.lua;/etc/cmh-lu/?.lua", 1, true) == nil) then
+                package.path = package.path .. ";/etc/cmh-ludl/?.lua;/etc/cmh-lu/?.lua"
+            end
+            
+            package.loaded.L_Mqtthandler = nil
+            p = require("L_Mqtthandler")
+            if (package.loaded.L_Mqtthandler == nil)
+            then
+                luup.log("Mqtthandler plugin: plugin is not installed correctly. Library L_Mqtthandler cannot be loaded.", 1)
+                luup.task("Plugin not correctly installed", 2, "Mqtthandler plugin", -1)
+                return false
+            end
+            luup.log("Mqtthandler plugin: library L_Mqtthandler loaded")
+            
+            return p.startup(lul_device)
+        end
+    </functions>
+    <startup>startup</startup>
+	<actionList>
+	<action>
+      <serviceId>urn:upnp-org:serviceId:WindowCovering1</serviceId>
+      <name>Up</name>
+      <run>
+		luup.log("UP command",1)
+        	p.mqttsend("pushed UP")
+      </run>
+    </action>
+    <action>
+      <serviceId>urn:upnp-org:serviceId:WindowCovering1</serviceId>
+      <name>Down</name>
+      <run>
+		luup.log("DOWN command",1)
+        	p.mqttsend("pushed DOWN")		
+        
+      </run>
+    </action>
+
+   
+	</actionList>
+</implementation>
+
+
+
+
