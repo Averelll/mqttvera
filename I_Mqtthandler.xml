@@ -31,7 +31,7 @@
       <name>Up</name>
       <run>
 		luup.log("UP command",1)
-        	p.mqttsend("pushed UP")
+        	p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"up\"}")
       </run>
     </action>
     <action>
@@ -39,12 +39,45 @@
       <name>Down</name>
       <run>
 		luup.log("DOWN command",1)
-        	p.mqttsend("pushed DOWN")		
-        
+        	p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"down\"}")		
       </run>
     </action>
-
-   
+    <action>
+      <serviceId>urn:upnp-org:serviceId:SwitchPower1</serviceId>
+      <name>SetTarget</name>
+      <job>
+        luup.variable_set ("urn:upnp-org:serviceId:SwitchPower1", "Target", lul_settings.newTargetValue, lul_device)
+        if(lul_settings.newTargetValue == "0" or lul_settings.newTargetValue == 0) then
+          p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"down\"}")
+        else
+          p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"up\"}")
+        end
+        luup.variable_set ("urn:upnp-org:serviceId:SwitchPower1", "Status", lul_settings.newTargetValue, lul_device)
+        return 4, 5
+      </job>
+    </action>
+    <action>
+      <serviceId>urn:upnp-org:serviceId:Dimming1</serviceId>
+      <name>SetLoadLevelTarget</name>
+      <job>
+        luup.variable_set ("urn:upnp-org:serviceId:Dimming1", "LoadLevelTarget", lul_settings.newLoadlevelTarget, lul_device)
+        if(lul_settings.newLoadlevelTarget == "0" or lul_settings.newLoadlevelTarget == 0) then
+          p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"down\"}")
+        else
+          p.mqttsend("{\"id\": " ..lul_device .. ", \"command\": \"up\"}")
+        end
+        luup.variable_set ("urn:upnp-org:serviceId:Dimming1", "LoadLevelStatus", lul_settings.newLoadlevelTarget, lul_device)
+        return 4, 5
+      </job>
+    </action>
+    <action>
+      <serviceId>urn:upnp-org:serviceId:TemperatureSetpoint1_Heat</serviceId>
+      <name>SetCurrentSetpoint</name>
+      <run>
+       p.mqttsend("{\"id\": " ..lul_device .. ", \"setpoint\": \"" .. lul_settings.NewCurrentSetpoint .. "\"}")
+      </run>
+    </action>
+ 
 	</actionList>
 </implementation>
 
